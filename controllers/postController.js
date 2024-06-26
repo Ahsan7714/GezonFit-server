@@ -106,10 +106,10 @@ exports.deleteActiveProduct = catchAsyncError(async (req, res, next) => {
 
 // get all pending services with user name
 exports.getAllPendingServices = catchAsyncError(async (req, res, next) => {
-    const services = await pendingService.find().populate("user", "name");
+    const pendingservices = await pendingService.find().populate("user", "name");
     res.status(200).json({
       success: true,
-      services,
+      pendingservices,
     });
   }
 );
@@ -153,6 +153,7 @@ exports.updatePendingService = catchAsyncError(
         rate: service.rate,
         description: service.description,
         user: service.user,
+        image : service.image,
         status : "active"
         });
     
@@ -167,10 +168,10 @@ exports.updatePendingService = catchAsyncError(
 
     // get all active services with user name
 exports.getAllActiveServices = catchAsyncError(async (req, res, next) => {
-    const services = await activeService.find().populate("user", "name");
+    const activeservices = await activeService.find().populate("user", "name");
     res.status(200).json({
       success: true,
-      services,
+      activeservices,
     });
   }
 );

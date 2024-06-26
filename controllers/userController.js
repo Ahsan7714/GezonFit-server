@@ -298,3 +298,23 @@ exports.createContactUs = catchAsyncError(async (req, res, next) => {
     });
 }
 );
+
+// load user profile
+exports.loadUserProfile = catchAsyncError(async (req, res, next) => {
+    // Get the user ID from the request parameters or authentication token
+    const userId = req.params.userId || req.user._id;
+
+    // Check if the user exists
+    const user = await User.findById(userId );
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: 'User not found',
+        });
+    }
+    // Send response with user's profile
+    res.status(200).json({
+        success: true,
+        user,
+    });
+} );

@@ -15,6 +15,7 @@ const {
   getAllActiveEvents,
   createNewsletter,
   createContactUs,
+  loadUserProfile,
 } = require("../controllers/userController");
 const {
   postPendingProduct,
@@ -60,7 +61,7 @@ router.get("/messages/received", isAuthenticatedUser, getReceivedMessages);
 
 // events routes
 router.route("/post-event").post(isAuthenticatedUser, postPendingEvent);
-router.route("/get-events").get(isAuthenticatedUser, getAllActiveEvents);
+router.route("/get-events").get( getAllActiveEvents);
 
 // product routes
 router.route("/post-product").post(isAuthenticatedUser, postPendingProduct);
@@ -94,5 +95,10 @@ router
 router
   .route("/all-active-services")
   .get(isAuthenticatedUser, getAllActiveServices);
+
+// user profile route
+router
+  .route("/me")
+  .get(isAuthenticatedUser, loadUserProfile);
 
 module.exports = router;

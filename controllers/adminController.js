@@ -27,7 +27,7 @@ exports.getTotalNoOfUsers = catchAsyncError(async (req, res, next) => {
     const users = await User.find();
     res.status(200).json({
         success: true,
-        total: users.length
+        totalUsers: users.length
     });
 });
 
@@ -113,7 +113,7 @@ exports.getTotalNoOfActivePartners = catchAsyncError(async (req, res, next) => {
     const activePartners = await activePartner.find();
     res.status(200).json({
         success: true,
-        total: activePartners.length
+        totalPartners: activePartners.length
     });
 }
 );
@@ -221,10 +221,10 @@ exports.deleteActiveEvent = catchAsyncError(async (req, res, next) => {
 
 // get all news letter
 exports.getAllNewsLetter = catchAsyncError(async (req, res, next) => {
-    const newsLetter = await NewsLetter.find();
+    const newsletter = await NewsLetter.find();
     res.status(200).json({
         success: true,
-        newsLetter
+        newsletter
     });
 }
 );
