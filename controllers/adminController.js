@@ -11,6 +11,7 @@ const pendingService = require("../models/pendingService");
 const activeService = require("../models/activeService");
 const NewsLetter = require('../models/newsletter');
 const ContactUs = require('../models/contactUs');
+const cloudinary = require("cloudinary").v2; // Import cloudinary
 
 
 
@@ -35,10 +36,10 @@ exports.getTotalNoOfUsers = catchAsyncError(async (req, res, next) => {
 
 // get all pending partners
 exports.getAllPendingPartners = catchAsyncError(async (req, res, next) => {
-    const pendingPartners = await pendingPartner.find();
+    const pendingpartners = await pendingPartner.find();
     res.status(200).json({
         success: true,
-        pendingPartners
+        pendingpartners
     });
 });
 
@@ -100,10 +101,10 @@ exports.approvePendingPartner = catchAsyncError(async (req, res, next) => {
 
 // get all active partners
 exports.getAllActivePartners = catchAsyncError(async (req, res, next) => {
-    const allActivePartners = await activePartner.find();
+    const activepartners = await activePartner.find();
     res.status(200).json({
         success: true,
-        allActivePartners
+        activepartners
     });
 }
 );
@@ -138,10 +139,10 @@ exports.deleteActivePartner = catchAsyncError(async (req, res, next) => {
 // get all pending events including user name
 
 exports.getAllPendingEvents = catchAsyncError(async (req, res, next) => {
-    const pendingEvent = await pendingEvents.find().populate('user', 'name');
+    const pendingevents = await pendingEvents.find().populate('user', 'name');
     res.status(200).json({
         success: true,
-        pendingEvent
+        pendingevents
     });
 }
 );
@@ -163,6 +164,7 @@ exports.updatePendingEvent = catchAsyncError(async (req, res, next) => {
         location: pendingEvent.location,
         description: pendingEvent.description,
         user: pendingEvent.user,
+        image : pendingEvent.image,
         status: "active"
     });
     await activeEvent.save();
@@ -191,13 +193,40 @@ exports.deletePendingEvent = catchAsyncError(async (req, res, next) => {
     });
 }
 );
+// post a active event
+exports.postActiveEvent = catchAsyncError(async (req, res, next) => {
+    const { title,  time, date, location, description } = req.body;
+    
+  const image = req.body.image
 
-// get all active events
-exports.getAllActiveEvents = catchAsyncError(async (req, res, next) => {
-    const activeEvent = await activeEvents.find();
+  
+  const myCloud =  await cloudinary.uploader.upload(image, {
+      public_id: `${Date.now()}`, 
+      resource_type: "auto",
+      folder: "activeEvents",
+  })
+  const imageUrl = myCloud.secure_url;
+    const activeEvent = await activeEvents.create({
+        title,
+        image: imageUrl,
+        time,
+        date,
+        location,
+        description,
+    });
     res.status(200).json({
         success: true,
         activeEvent
+    });
+}
+);
+
+// get all active events
+exports.getAllActiveEvents = catchAsyncError(async (req, res, next) => {
+    const activeevents = await activeEvents.find().populate('user', 'name');
+    res.status(200).json({
+        success: true,
+        activeevents
     });
 }
 );
@@ -225,6 +254,15 @@ exports.getAllNewsLetter = catchAsyncError(async (req, res, next) => {
     res.status(200).json({
         success: true,
         newsletter
+    });
+}
+);
+// delete all newsletters
+exports.deleteAllNewsLetter = catchAsyncError(async (req, res, next) => {
+    await NewsLetter.deleteMany();
+    res.status(200).json({
+        success: true,
+        message: "All newsletters deleted successfully"
     });
 }
 );

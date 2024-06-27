@@ -8,10 +8,10 @@ const activeService = require("../models/activeService");
 
 // get all pending products with user name
 exports.getAllPendingProducts = catchAsyncError(async (req, res, next) => {
-    const products = await pendingProduct.find().populate("user", "name");
+    const pendingproducts = await pendingProduct.find().populate("user", "name");
     res.status(200).json({
       success: true,
-      products,
+      pendingproducts,
     });
   }
 );
@@ -56,8 +56,10 @@ exports.updatePendingProduct = catchAsyncError(
         price: product.price,
         description: product.description,
         user: product.user,
-        status : "active"
+        status : "active",
+        image  : product.image,
         });
+
     
         await pendingProduct.findByIdAndDelete(req.params.id);
     
@@ -70,10 +72,10 @@ exports.updatePendingProduct = catchAsyncError(
 
 // get all active products with user name
 exports.getAllActiveProducts = catchAsyncError(async (req, res, next) => {
-    const products = await activeProduct.find().populate("user", "name");
+    const activeproducts = await activeProduct.find().populate("user", "name");
     res.status(200).json({
       success: true,
-      products,
+      activeproducts,
     });
   }
 );

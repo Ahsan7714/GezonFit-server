@@ -17,7 +17,9 @@ const {
   getTotalNoOfUsers,
   getTotalNoOfActivePartners,
   getAllNewsLetter,
-  getAllContactUs
+  getAllContactUs,
+  postActiveEvent,
+  deleteAllNewsLetter
 } = require("../controllers/adminController");
 
 const {
@@ -44,6 +46,7 @@ router.route("/total-active-products").get(isAuthenticatedUser,authorizeRoles("a
 
 // newsletter routes
 router.route("/newsletters").get(isAuthenticatedUser,authorizeRoles("admin"),getAllNewsLetter);
+router.route("/delete-newsletters").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteAllNewsLetter);
 
 // contact us routes
 router.route("/contact-us").get(isAuthenticatedUser,authorizeRoles("admin"),getAllContactUs);
@@ -51,14 +54,15 @@ router.route("/contact-us").get(isAuthenticatedUser,authorizeRoles("admin"),getA
 
 // partner routes
 router.route("/pending-partners").get (isAuthenticatedUser,authorizeRoles("admin"),getAllPendingPartners);
-router.route("/approve-partner/:id").put(isAuthenticatedUser,authorizeRoles("admin"), approvePendingPartner);
+router.route("/approve-partner/:id").put( approvePendingPartner);
 router.route("/active-partners").get(getAllActivePartners);
 router.route("/delete-partner/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteActivePartner);
 router.route("/delete-pending-partner/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deletePendingPartner);
 
 // events routes
+router.route("/post-event").post(isAuthenticatedUser,authorizeRoles("admin"),postActiveEvent);
 router.route("/pending-events").get(isAuthenticatedUser,authorizeRoles("admin"),getAllPendingEvents);
-router.route("/update-event/:id").put(isAuthenticatedUser,authorizeRoles("admin"),updatePendingEvent);
+router.route("/update-event/:id").put(updatePendingEvent);
 router.route("/active-events").get(getAllActiveEvents);
 router.route("/delete-event/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deletePendingEvent);
 router.route("/delete-active-event/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteActiveEvent);
@@ -66,7 +70,7 @@ router.route("/delete-active-event/:id").delete(isAuthenticatedUser,authorizeRol
 // products routes
 router.route("/pending-products").get(isAuthenticatedUser,authorizeRoles("admin"),getAllPendingProducts);
 router.route("/delete-pending-product/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deletePendingProduct);
-router.route("/update-product/:id").put(isAuthenticatedUser,authorizeRoles("admin"),updatePendingProduct);
+router.route("/update-product/:id").put(updatePendingProduct);
 router.route("/active-products").get(getAllActiveProducts);
 router.route("/delete-active-product/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteActiveProduct);
 
