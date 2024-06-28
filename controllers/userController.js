@@ -221,7 +221,7 @@ exports.postPendingEvent = catchAsyncError(async (req, res, next) => {
     const myCloud =  await cloudinary.uploader.upload(image, {
         public_id: `${Date.now()}`, 
         resource_type: "auto",
-        folder: "pendingPartners",
+        folder: "pendingEvents",
     })
     const imageUrl = myCloud.secure_url;
 

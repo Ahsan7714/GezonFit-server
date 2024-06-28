@@ -129,7 +129,7 @@ exports.createPendingService = catchAsyncError(async (req, res, next) => {
   const myCloud =  await cloudinary.uploader.upload(image, {
       public_id: `${Date.now()}`, 
       resource_type: "auto",
-      folder: "pendingProducts",
+      folder: "pendingService",
   })
   const imageUrl = myCloud.secure_url;
 
