@@ -34,7 +34,13 @@ const {
   getAllActiveServices,
   deleteActiveService,
   getAllActiveServicesNumber,
-  getAllActiveProductsNumber
+  getAllActiveProductsNumber,
+  getAllPendingBlogs,
+  deletePendingBlog,
+  updatePendingBlog,
+  getAllActiveBlogs,
+  deleteActiveBlog,
+  postActiveBlog
 } = require("../controllers/postController");
 
 // user count routes
@@ -80,5 +86,14 @@ router.route("/delete-pending-service/:id").delete(isAuthenticatedUser,authorize
 router.route("/update-service/:id").put(updatePendingService);
 router.route("/active-services").get(getAllActiveServices);
 router.route("/delete-active-service/:id").delete(isAuthenticatedUser,authorizeRoles("admin"),deleteActiveService);
+
+// blogs routes
+router.route("/pending-blogs").get(isAuthenticatedUser, authorizeRoles("admin"), getAllPendingBlogs);
+router.route("/delete-pending-blog/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deletePendingBlog);
+router.route("/update-blog/:id").put(updatePendingBlog);
+router.route("/active-blogs").get(getAllActiveBlogs);
+router.route("/delete-active-blog/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteActiveBlog);
+router.route("/post-blog").post(isAuthenticatedUser, authorizeRoles("admin"), postActiveBlog);
+
 
 module.exports = router;

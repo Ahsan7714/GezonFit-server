@@ -7,6 +7,7 @@ const cloudinary = require("cloudinary").v2;
 const fileupload = require('express-fileupload'); 
 const http = require("http");
 const app = express();
+const socketHandler = require("./socketio");
 
 const PORT = 3000;
 
@@ -42,17 +43,28 @@ app.use(cookieParser());
 // Defining routes
 const userRoutes = require("./routes/userRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const messageRoutes  = require("./routes/MessageRoute")
+const conversationRoutes = require("./routes/conversationRoute");
 
 // Routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/messages",messageRoutes);
+app.use("/api/v1/conversation", conversationRoutes);
 
 // Root route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(PORT, (err) => {
+
+const server = http.createServer(app);
+
+// Set up WebSocket handling
+socketHandler(server);
+
+server.listen(PORT, (err) => {
   if (err) console.log(err);
   console.log("Server is running on port " + PORT);
 });
+

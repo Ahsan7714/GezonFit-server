@@ -29,6 +29,13 @@ const {
   getAllActiveServicesOfUser,
   deleteActiveService,
   getAllActiveServices,
+  postPendingBlog,
+  getAllPendingBlogs,
+  deletePendingBlog,
+  getActiveBlogsOfUser,
+  deleteActiveBlog,
+  getAllActiveBlogs,
+  getBlogById
 } = require("../controllers/userPostController");
 const { isAuthenticatedUser } = require("../middleware/auth");
 
@@ -95,6 +102,25 @@ router
 router
   .route("/all-active-services")
   .get(isAuthenticatedUser, getAllActiveServices);
+
+  // blog routes
+router.route("/post-blog").post(isAuthenticatedUser, postPendingBlog);
+router.route("/get-blogs").get(isAuthenticatedUser, getAllPendingBlogs);
+router
+  .route("/delete-blog/:id")
+  .delete(isAuthenticatedUser, deletePendingBlog);
+router
+  .route("/active-blogs")
+  .get(isAuthenticatedUser, getActiveBlogsOfUser);
+router
+  .route("/delete-active-blog/:id")
+  .delete(isAuthenticatedUser, deleteActiveBlog);
+router
+  .route("/all-active-blogs")
+  .get( getAllActiveBlogs);
+router
+  .route("/blog/:id")
+  .get( getBlogById);
 
 // user profile route
 router

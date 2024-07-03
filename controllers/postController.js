@@ -5,6 +5,9 @@ const pendingProduct = require("../models/pendingProducts");
 const activeProduct = require("../models/activeProducts");
 const pendingService = require("../models/pendingService");
 const activeService = require("../models/activeService");
+const cloudinary = require("cloudinary").v2; // Import cloudinary
+const ActiveBlogs = require("../models/ActiveBlogs");
+const PendingBlogs = require("../models/PendingBlogs");
 
 // get all pending products with user name
 exports.getAllPendingProducts = catchAsyncError(async (req, res, next) => {
@@ -198,6 +201,109 @@ exports.deleteActiveService = catchAsyncError(async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Service deleted successfully",
+    });
+  }
+);
+
+// get all pending blogs with user name
+exports.getAllPendingBlogs = catchAsyncError(async (req, res, next) => {
+    const pendingblogs = await PendingBlogs.find().populate("user", "name");
+    res.status(200).json({
+      success: true,
+      pendingblogs,
+    });
+  }
+);
+// delete pending blog
+exports.deletePendingBlog = catchAsyncError(async (req, res, next) => {
+    const blog = await PendingBlogs.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Blog deleted successfully",
+    });
+  }
+);
+// update status of pending blog to active blog
+exports.updatePendingBlog = catchAsyncError(
+    async (req, res, next) => {
+        const blog = await PendingBlogs.findById(req.params.id);
+    
+        if (!blog) {
+        return res.status(404).json({
+            success: false,
+            message: "Blog not found",
+        });
+        }
+    
+        blog.status = "active";
+        await blog.save();
+    
+        await ActiveBlogs.create({
+        title: blog.title,
+        content: blog.content,
+        user: blog.user,
+        image : blog.image,
+        status : "active"
+        });
+    
+        await PendingBlogs.findByIdAndDelete(req.params.id);
+    
+        res.status(200).json({
+        success: true,
+        message: "Blog updated successfully",
+        });
+    }
+    );
+
+// get all active blogs with user name
+exports.getAllActiveBlogs = catchAsyncError(async (req, res, next) => {
+    const activeblogs = await ActiveBlogs.find().populate("user", "name");
+    res.status(200).json({
+      success: true,
+      activeblogs,
+    });
+  }
+);
+// delete active blog
+exports.deleteActiveBlog = catchAsyncError(async (req, res, next) => {
+    const blog = await ActiveBlogs.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({
+        success: false,
+        message: "Blog not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Blog deleted successfully",
+    });
+  }
+);
+// post a active blog
+exports.postActiveBlog = catchAsyncError(async (req, res, next) => {
+    const { title, content } = req.body;
+    const image = req.body.image;
+  const myCloud =  await cloudinary.uploader.upload(image, {
+      public_id: `${Date.now()}`, 
+      resource_type: "auto",
+      folder: "activeBlogs",
+  })
+  const imageUrl = myCloud.secure_url;
+    const activeblog = await ActiveBlogs.create({
+      title,
+      content,
+      image: imageUrl,
+
+    });
+    res.status(201).json({
+      success: true,
+      activeblog,
     });
   }
 );

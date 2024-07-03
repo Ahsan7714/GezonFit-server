@@ -221,6 +221,29 @@ exports.postActiveEvent = catchAsyncError(async (req, res, next) => {
 }
 );
 
+// update active event
+exports.updateActiveEvent = catchAsyncError(async (req, res, next) => {
+    const { title,  time, date, location, description } = req.body;
+    const activeEvent = await activeEvents.findById(req.params.id);
+    if (!activeEvent) {
+        return res.status(404).json({
+            success: false,
+            message: "Active event not found"
+        });
+    }
+    activeEvent.title = title;
+    activeEvent.time = time;
+    activeEvent.date = date;
+    activeEvent.location = location;
+    activeEvent.description = description;
+    await activeEvent.save();
+    res.status(200).json({
+        success: true,
+        message: "Active event updated successfully"
+    });
+}
+);
+
 // get all active events
 exports.getAllActiveEvents = catchAsyncError(async (req, res, next) => {
     const activeevents = await activeEvents.find().populate('user', 'name');
