@@ -18,7 +18,7 @@ const getUser = (userId) => {
 const socketHandler = (server) => {
   const io = socketio(server, {
     cors: {
-      origin: ["https://tankminds.vercel.app", "http://localhost:5173"],
+      origin: ["https://health-and-fitness-ashy.vercel.app", "http://localhost:5173"],
     },
   });
 

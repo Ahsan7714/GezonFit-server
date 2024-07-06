@@ -9,21 +9,33 @@ const activeEvents = require('../models/activeEvents');
 const NewsLetter = require('../models/newsletter');
 const ContactUs = require('../models/contactUs');
 const cloudinary = require("cloudinary").v2; // Import cloudinary
+const Conversation = require('../models/Conversation');
 
 // register a user 
 exports.registerUser = catchAsyncError(async (req, res, next) => {
     const { name, email, password } = req.body;
 
+    // Create a new user
     const user = await User.create({
         name,
         email,
         password,
     });
-    // send token in cookie
-    sendToken(user, 200, res , message = "User registered successfully");
 
+    // Find or create the community conversation
+    let conversation = await Conversation.findOne({ type: "community" });
+
+    if (!conversation) {
+        conversation = new Conversation({ type: "community", members: [] });
+    }
+
+    // Add the new user to the community conversation
+    conversation.members.push(user._id);
+    await conversation.save();
+
+    // Send token in cookie
+    sendToken(user, 200, res, "User registered successfully");
 });
-
 // login a user
 exports.loginUser = catchAsyncError(async (req, res, next) => {
     const { email, password } = req.body;

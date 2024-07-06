@@ -10,11 +10,13 @@ router.post("/community", async (req, res) => {
     if (!communityConversation) {
       return res.status(404).json({ message: "Community conversation not found" });
     }
+    // const sender = await User.findById(req.body.senderId);
 
     const newMessage = new Message({
       conversationId: communityConversation._id,
       sender: req.body.senderId,
       text: req.body.text,
+      // senderName: sender.name,
     });
 
     const savedMessage = await newMessage.save();
@@ -35,7 +37,7 @@ router.get("/community", async (req, res) => {
 
     const messages = await Message.find({
       conversationId: communityConversation._id,
-    }).sort({ createdAt: -1 });
+    }).sort({ createdAt: -1 }).populate('sender', 'name');
 
     res.status(200).json(messages);
   } catch (err) {
