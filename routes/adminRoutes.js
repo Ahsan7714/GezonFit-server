@@ -19,7 +19,8 @@ const {
   getAllNewsLetter,
   getAllContactUs,
   postActiveEvent,
-  deleteAllNewsLetter
+  deleteAllNewsLetter,
+  deleteContactUs
 } = require("../controllers/adminController");
 
 const {
@@ -56,6 +57,7 @@ router.route("/delete-newsletters").delete(isAuthenticatedUser,authorizeRoles("a
 
 // contact us routes
 router.route("/contact-us").get(isAuthenticatedUser,authorizeRoles("admin"),getAllContactUs);
+router.route("/delete-contact/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteContactUs);
 
 
 // partner routes

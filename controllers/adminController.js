@@ -292,10 +292,27 @@ exports.deleteAllNewsLetter = catchAsyncError(async (req, res, next) => {
 
 //get all contact us
 exports.getAllContactUs = catchAsyncError(async (req, res, next) => {
-    const contactUs = await ContactUs.find();
+    const contactforms = await ContactUs.find();
     res.status(200).json({
         success: true,
-        contactUs
+        contactforms
+    });
+}
+);
+
+// delete a contact us
+exports.deleteContactUs = catchAsyncError(async (req, res, next) => {
+    const contactUs = await ContactUs.findById(req.params.id);
+    if (!contactUs) {
+        return res.status(404).json({
+            success: false,
+            message: "Contact us not found"
+        });
+    }
+    await ContactUs.findByIdAndDelete(contactUs);
+    res.status(200).json({
+        success: true,
+        message: "Contact us deleted successfully"
     });
 }
 );
