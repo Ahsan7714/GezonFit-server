@@ -333,32 +333,3 @@ exports.loadUserProfile = catchAsyncError(async (req, res, next) => {
         user,
     });
 } );
-
-// get all contact us messages
-exports.getAllContactUsMessages = catchAsyncError(async (req, res, next) => {
-    const contactUs = await ContactUs.find();
-    res.status(200).json({
-        success: true,
-        contactUs,
-        message: "Contact us messages fetched successfully",
-    });
-}
-);
-
-// delete a contact us message
-exports.deleteContactUsMessage = catchAsyncError(async (req, res, next) => {
-    const contactUsMessageToDelete = await ContactUs.findByIdAndDelete(req.params.id);
-
-    if (!contactUsMessageToDelete) {
-        return res.status(404).json({
-            success: false,
-            message: 'Contact us message not found',
-        });
-    }
-
-    res.status(200).json({
-        success: true,
-        message: 'Contact us message deleted successfully',
-    });
-}
-);
