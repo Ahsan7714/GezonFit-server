@@ -10,6 +10,20 @@ const NewsLetter = require('../models/newsletter');
 const ContactUs = require('../models/contactUs');
 const cloudinary = require("cloudinary").v2; // Import cloudinary
 const Conversation = require('../models/Conversation');
+const nodemailer = require('nodemailer');
+
+require('dotenv').config();
+
+
+const transporter = nodemailer.createTransport({
+    service: process.env.EMAIL_SERVICE,
+    secure: true,
+    port: 465,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
 
 // register a user 
 exports.registerUser = catchAsyncError(async (req, res, next) => {
@@ -305,6 +319,39 @@ exports.createContactUs = catchAsyncError(async (req, res, next) => {
     });
 
     await contactUs.save();
+    res.status(201).json({
+        success: true,
+        contactUs,
+        message: "Contact us created successfully",
+    });
+
+    const mailOptions = {
+        from: email,
+        to: process.env.EMAIL_USER,
+        replyTo: email, // This sets the user's email as the reply-to address
+        subject: 'New Contact Us Message',
+        html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ccc; border-radius: 10px;">
+                <h1 style="color: #1ad0f1;">Gezonfit50+</h1>
+                <h2 style="color: #333;">New Contact Us Message</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message}</p>
+            </div>
+        `,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+            return res.status(500).json({ success: false, message: 'Error sending email' });
+        }
+        console.log('Email sent: ' + info.response);
+       
+    });
+ 
 
     res.status(201).json({
         success: true,
