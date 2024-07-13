@@ -16,9 +16,9 @@ require('dotenv').config();
 
 
 const transporter = nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE,
-    secure: true,
-    port: 465,
+    host: process.env.EMAIL_SERVICE,
+    port: 587,
+    secure: false, // true for 465, false for other ports
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -319,6 +319,8 @@ exports.createContactUs = catchAsyncError(async (req, res, next) => {
     });
 
     await contactUs.save();
+
+    // Send the response immediately after saving the contact us information
     res.status(201).json({
         success: true,
         contactUs,
@@ -342,24 +344,14 @@ exports.createContactUs = catchAsyncError(async (req, res, next) => {
         `,
     };
 
-    // Send the email
+    // Send the email without affecting the response to the client
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.error('Error sending email:', error);
-            return res.status(500).json({ success: false, message: 'Error sending email' });
+            return console.error('Error sending email:', error);
         }
         console.log('Email sent: ' + info.response);
-       
     });
- 
-
-    res.status(201).json({
-        success: true,
-        contactUs,
-        message: "Contact us created successfully",
-    });
-}
-);
+});
 
 // load user profile
 exports.loadUserProfile = catchAsyncError(async (req, res, next) => {
