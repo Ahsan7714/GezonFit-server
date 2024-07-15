@@ -18,7 +18,7 @@ const getUser = (userId) => {
 const socketHandler = (server) => {
   const io = socketio(server, {
     cors: {
-      origin: ["https://health-and-fitness-ashy.vercel.app", "http://localhost:5173","https://gezonfit50plus.vercel.app"],
+      origin: ["https://gezondfit50plus.nl", "http://localhost:5173","https://gezonfit50plus.vercel.app"],
     },
   });
 
